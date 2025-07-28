@@ -9,7 +9,7 @@ allprojects {
     version = "0.5.0.0"
 }
 
-val elasticsearchVersion = "8.12.0"
+val elasticsearchVersion = "9.0.3"
 
 plugins {
     kotlin("jvm") version "2.1.10"
@@ -28,7 +28,7 @@ dependencies {
     implementation(libs.treeWareKotlinCore)
     implementation(kotlin("stdlib"))
 
-    implementation("org.elasticsearch.client:elasticsearch-rest-high-level-client:$elasticsearchVersion")
+    implementation("co.elastic.clients:elasticsearch-java:$elasticsearchVersion")
 
     testImplementation(libs.treeWareKotlinCoreTestFixtures)
     testImplementation(kotlin("test"))
