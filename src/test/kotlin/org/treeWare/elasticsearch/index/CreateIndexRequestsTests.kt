@@ -1,10 +1,6 @@
 package org.treeWare.elasticsearch.index
 
 import org.treeWare.metaModel.addressBookMetaModel
-import org.treeWare.metaModel.getEntitiesMeta
-import org.treeWare.metaModel.getMetaName
-import org.treeWare.metaModel.getPackagesMeta
-import org.treeWare.model.core.EntityModel
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -14,19 +10,32 @@ class CreateIndexRequestsTests {
         // Generate index requests
         val indexRequests = createIndexRequests(addressBookMetaModel)
         
-        // Collect expected index names
-        val expectedIndexNames = mutableListOf<String>()
-        val packagesMeta = getPackagesMeta(addressBookMetaModel)
-        packagesMeta.values.forEach { packageElement ->
-            val packageMeta = packageElement as EntityModel
-            val packageName = getMetaName(packageMeta)
-            val entitiesMeta = getEntitiesMeta(packageMeta)
-            entitiesMeta?.values?.forEach { entityElement ->
-                val entityMeta = entityElement as EntityModel
-                val entityName = getMetaName(entityMeta)
-                expectedIndexNames.add("${packageName}__${entityName}")
-            }
-        }
+        // Hard-coded list of expected index names based on the JSON files used by addressBookMetaModel
+        val expectedIndexNames = listOf(
+            // From org.tree_ware.test.address_book.main package
+            "org.tree_ware.test.address_book.main__address_book_root",
+            "org.tree_ware.test.address_book.main__address_book_settings",
+            "org.tree_ware.test.address_book.main__advanced_settings",
+            "org.tree_ware.test.address_book.main__address_book_person",
+            "org.tree_ware.test.address_book.main__group",
+            "org.tree_ware.test.address_book.main__address_book_relation",
+            "org.tree_ware.test.address_book.main__hero_details",
+            
+            // From org.tree_ware.test.address_book.city package
+            "org.tree_ware.test.address_book.city__address_book_city",
+            "org.tree_ware.test.address_book.city__address_book_city_info",
+            
+            // From org.tree_ware.test.address_book.club package
+            "org.tree_ware.test.address_book.club__address_book_club",
+            
+            // From org.tree_ware.test.address_book.keyless package
+            "org.tree_ware.test.address_book.keyless__keyless",
+            "org.tree_ware.test.address_book.keyless__keyless_child",
+            "org.tree_ware.test.address_book.keyless__keyed_child",
+            
+            // From org.tree_ware.meta_model.geo package
+            "org.tree_ware.meta_model.geo__point"
+        )
         
         // Verify the number of index requests
         assertEquals(expectedIndexNames.size, indexRequests.size, "Number of index requests")
