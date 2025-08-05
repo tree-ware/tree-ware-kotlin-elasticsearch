@@ -37,9 +37,6 @@ class CreateIndexRequestsTests {
             "org.tree_ware.meta_model.geo__point"
         )
         
-        // Verify the number of index requests
-        assertEquals(expectedIndexNames.size, indexRequests.size, "Number of index requests")
-        
         // Verify the index names
         val actualIndexNames = indexRequests.map { it.index() }
         expectedIndexNames.forEach { expectedIndexName ->
@@ -47,5 +44,8 @@ class CreateIndexRequestsTests {
                 "Index name $expectedIndexName not found in generated index requests"
             }
         }
+        
+        // Verify the number of index requests
+        assertEquals(expectedIndexNames.size, indexRequests.size, "Number of index requests")
     }
 }
