@@ -45,7 +45,11 @@ class CreateIndexRequestsTests {
             }
         }
         
-        // Verify the number of index requests
-        assertEquals(expectedIndexNames.size, indexRequests.size, "Number of index requests")
+        // Verify that every actual index name can be found in the expected index names
+        actualIndexNames.forEach { actualIndexName ->
+            assert(expectedIndexNames.contains(actualIndexName)) {
+                "Actual index name $actualIndexName not found in expected index names"
+            }
+        }
     }
 }
