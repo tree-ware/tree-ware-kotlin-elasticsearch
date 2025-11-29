@@ -41,7 +41,7 @@ class CreateIndexRequestsTests {
         val actualIndexNames = indexRequests.map { it.index() }
         expectedIndexNames.forEach { expectedIndexName ->
             assert(actualIndexNames.contains(expectedIndexName)) {
-                "Index name $expectedIndexName not found in generated index requests"
+                "Expected index name $expectedIndexName not found in actual index names"
             }
         }
         
