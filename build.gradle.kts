@@ -14,7 +14,7 @@ val elasticsearchVersion = "9.0.3"
 plugins {
     kotlin("jvm") version "2.1.10"
     id("idea")
-    id("org.tree-ware.core") version "0.5.0.0"
+    id("org.tree-ware.core") version "0.6.1.0"
     id("java-library")
     id("maven-publish")
 }
