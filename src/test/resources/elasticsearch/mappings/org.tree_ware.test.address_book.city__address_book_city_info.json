@@ -1,0 +1,24 @@
+{
+  "mappings" : {
+    "properties" : {
+      "water_body_name" : {
+        "type" : "keyword"
+      },
+      "city" : {
+        "type" : "nested"
+      },
+      "keyless" : {
+        "type" : "nested"
+      },
+      "is_coastal_city" : {
+        "type" : "boolean"
+      },
+      "city_center" : {
+        "type" : "nested"
+      },
+      "info" : {
+        "type" : "keyword"
+      }
+    }
+  }
+}

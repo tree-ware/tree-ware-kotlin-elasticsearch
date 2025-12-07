@@ -1,0 +1,15 @@
+{
+  "mappings" : {
+    "properties" : {
+      "keyed_child" : {
+        "type" : "nested"
+      },
+      "keyless_child" : {
+        "type" : "nested"
+      },
+      "name" : {
+        "type" : "keyword"
+      }
+    }
+  }
+}

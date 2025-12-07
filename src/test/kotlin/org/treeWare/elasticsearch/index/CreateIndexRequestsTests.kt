@@ -1,13 +1,6 @@
 package org.treeWare.elasticsearch.index
 
-import co.elastic.clients.elasticsearch._types.mapping.Property
-import org.treeWare.metaModel.FieldType
 import org.treeWare.metaModel.addressBookMetaModel
-import org.treeWare.metaModel.getFieldTypeMeta
-import org.treeWare.metaModel.getMetaName
-import org.treeWare.metaModel.traversal.AbstractLeader1MetaModelVisitor
-import org.treeWare.metaModel.traversal.metaModelForEach
-import org.treeWare.model.core.EntityModel
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -59,80 +52,18 @@ class CreateIndexRequestsTests {
             }
         }
 
-        // Build a lookup from index name to request for mapping verification
-        val requestByIndex = indexRequests.associateBy { it.index() }
-
-        // Traverse the meta-model again and verify field mappings per entity/index
-        metaModelForEach(addressBookMetaModel, MappingVerificationVisitor(requestByIndex))
-    }
-}
-
-private class MappingVerificationVisitor(
-    private val requestByIndex: Map<String, co.elastic.clients.elasticsearch.indices.CreateIndexRequest>
-) : AbstractLeader1MetaModelVisitor<org.treeWare.model.traversal.TraversalAction>(org.treeWare.model.traversal.TraversalAction.CONTINUE) {
-    private var currentPackageName: String = ""
-    private var currentEntityName: String? = null
-
-    override fun visitPackageMeta(leaderPackageMeta1: EntityModel) : org.treeWare.model.traversal.TraversalAction {
-        currentPackageName = getMetaName(leaderPackageMeta1)
-        return org.treeWare.model.traversal.TraversalAction.CONTINUE
-    }
-
-    override fun visitEntityMeta(leaderEntityMeta1: EntityModel) : org.treeWare.model.traversal.TraversalAction {
-        currentEntityName = getMetaName(leaderEntityMeta1)
-        return org.treeWare.model.traversal.TraversalAction.CONTINUE
-    }
-
-    override fun visitFieldMeta(leaderFieldMeta1: EntityModel) : org.treeWare.model.traversal.TraversalAction {
-        val entityName = currentEntityName ?: return org.treeWare.model.traversal.TraversalAction.CONTINUE
-        val indexName = "${currentPackageName}__${entityName}"
-        val request = requestByIndex[indexName]
-            ?: throw AssertionError("CreateIndexRequest not found for index $indexName")
-        val props: Map<String, Property> = request.mappings()?.properties() ?: emptyMap()
-
-        val fieldName = getMetaName(leaderFieldMeta1)
-        val fieldType = getFieldTypeMeta(leaderFieldMeta1) ?: return org.treeWare.model.traversal.TraversalAction.CONTINUE
-        val prop = props[fieldName] ?: throw AssertionError("Property '$fieldName' not found in index '$indexName'")
-
-        // Verify the ES property type based on the meta-model field type mapping rules
-        when (fieldType) {
-            FieldType.BOOLEAN -> assert(prop.boolean_() != null) { failMsg(indexName, fieldName, "boolean") }
-            FieldType.UINT8 -> assert(prop.short_() != null) { failMsg(indexName, fieldName, "short") }
-            FieldType.UINT16 -> assert(prop.integer() != null) { failMsg(indexName, fieldName, "integer") }
-            FieldType.UINT32 -> assert(prop.long_() != null) { failMsg(indexName, fieldName, "long") }
-            FieldType.UINT64 -> assert(prop.unsignedLong() != null) { failMsg(indexName, fieldName, "unsigned_long") }
-            FieldType.INT8 -> assert(prop.byte_() != null) { failMsg(indexName, fieldName, "byte") }
-            FieldType.INT16 -> assert(prop.short_() != null) { failMsg(indexName, fieldName, "short") }
-            FieldType.INT32 -> assert(prop.integer() != null) { failMsg(indexName, fieldName, "integer") }
-            FieldType.INT64 -> assert(prop.long_() != null) { failMsg(indexName, fieldName, "long") }
-            FieldType.FLOAT -> assert(prop.float_() != null) { failMsg(indexName, fieldName, "float") }
-            FieldType.DOUBLE -> assert(prop.double_() != null) { failMsg(indexName, fieldName, "double") }
-            FieldType.BIG_INTEGER -> assert(prop.keyword() != null) { failMsg(indexName, fieldName, "keyword (big_integer)") }
-            FieldType.BIG_DECIMAL -> assert(prop.keyword() != null) { failMsg(indexName, fieldName, "keyword (big_decimal)") }
-            FieldType.TIMESTAMP -> {
-                val dateProp = prop.date() ?: throw AssertionError(failMsg(indexName, fieldName, "date"))
-                val format = dateProp.format()
-                assert(format == "epoch_millis") {
-                    "Incorrect date format for '$fieldName' in index '$indexName': expected 'epoch_millis', actual '$format'"
-                }
+        // Compare serialized request bodies against golden JSON resources
+        val missingGoldens = mutableListOf<String>()
+        indexRequests.forEach { req ->
+            val index = req.index()
+            val actual = JsonTestUtils.normalizeJson(JsonTestUtils.serializeRequestBodyToJson(req))
+            val resourcePath = "elasticsearch/mappings/$index.json"
+            val expected = this::class.java.classLoader.getResource(resourcePath)?.readText()
+            if (expected == null) missingGoldens.add(resourcePath) else {
+                val expectedNorm = JsonTestUtils.normalizeJson(expected)
+                assertEquals(expectedNorm, actual, "Mismatch in CreateIndexRequest body for index: $index")
             }
-            FieldType.STRING -> assert(prop.keyword() != null) { failMsg(indexName, fieldName, "keyword (string)") }
-            FieldType.UUID -> assert(prop.keyword() != null) { failMsg(indexName, fieldName, "keyword (uuid)") }
-            FieldType.BLOB -> assert(prop.binary() != null) { failMsg(indexName, fieldName, "binary") }
-            FieldType.PASSWORD1WAY -> assert(prop.keyword() != null) { failMsg(indexName, fieldName, "keyword (password1way)") }
-            FieldType.PASSWORD2WAY -> assert(prop.keyword() != null) { failMsg(indexName, fieldName, "keyword (password2way)") }
-            FieldType.ALIAS -> assert(prop.keyword() != null) { failMsg(indexName, fieldName, "keyword (alias)") }
-            FieldType.ENUMERATION -> assert(prop.integer() != null) { failMsg(indexName, fieldName, "integer (enum)") }
-            FieldType.ASSOCIATION -> assert(prop.keyword() != null) { failMsg(indexName, fieldName, "keyword (association)") }
-            FieldType.COMPOSITION -> assert(prop.nested() != null) { failMsg(indexName, fieldName, "nested (composition)") }
         }
-        return org.treeWare.model.traversal.TraversalAction.CONTINUE
+        assertEquals(emptyList<String>(), missingGoldens, "Missing golden mapping JSON resources: ${'$'}missingGoldens")
     }
-
-    override fun leaveEntityMeta(leaderEntityMeta1: EntityModel) {
-        currentEntityName = null
-    }
-
-    private fun failMsg(indexName: String, fieldName: String, expected: String) =
-        "Incorrect mapping for '$fieldName' in index '$indexName' (expected $expected)"
 }

@@ -1,0 +1,24 @@
+{
+  "mappings" : {
+    "properties" : {
+      "sub_category" : {
+        "type" : "keyword"
+      },
+      "phone" : {
+        "type" : "keyword"
+      },
+      "keyless" : {
+        "type" : "nested"
+      },
+      "name" : {
+        "type" : "keyword"
+      },
+      "category" : {
+        "type" : "keyword"
+      },
+      "info" : {
+        "type" : "keyword"
+      }
+    }
+  }
+}

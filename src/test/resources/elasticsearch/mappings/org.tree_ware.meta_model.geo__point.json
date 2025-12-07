@@ -1,0 +1,12 @@
+{
+  "mappings" : {
+    "properties" : {
+      "latitude" : {
+        "type" : "double"
+      },
+      "longitude" : {
+        "type" : "double"
+      }
+    }
+  }
+}

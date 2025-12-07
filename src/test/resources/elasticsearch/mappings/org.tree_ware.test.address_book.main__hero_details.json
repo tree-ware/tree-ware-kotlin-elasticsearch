@@ -1,0 +1,12 @@
+{
+  "mappings" : {
+    "properties" : {
+      "strengths" : {
+        "type" : "keyword"
+      },
+      "weaknesses" : {
+        "type" : "keyword"
+      }
+    }
+  }
+}

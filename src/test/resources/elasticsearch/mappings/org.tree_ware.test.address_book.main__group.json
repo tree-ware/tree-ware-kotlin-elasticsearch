@@ -1,0 +1,15 @@
+{
+  "mappings" : {
+    "properties" : {
+      "sub_groups" : {
+        "type" : "nested"
+      },
+      "name" : {
+        "type" : "keyword"
+      },
+      "info" : {
+        "type" : "keyword"
+      }
+    }
+  }
+}

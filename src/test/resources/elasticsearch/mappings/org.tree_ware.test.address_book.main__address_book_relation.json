@@ -1,0 +1,15 @@
+{
+  "mappings" : {
+    "properties" : {
+      "person" : {
+        "type" : "keyword"
+      },
+      "id" : {
+        "type" : "keyword"
+      },
+      "relationship" : {
+        "type" : "integer"
+      }
+    }
+  }
+}

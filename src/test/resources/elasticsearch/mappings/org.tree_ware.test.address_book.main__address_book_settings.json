@@ -1,0 +1,18 @@
+{
+  "mappings" : {
+    "properties" : {
+      "background_color" : {
+        "type" : "integer"
+      },
+      "last_name_first" : {
+        "type" : "boolean"
+      },
+      "advanced" : {
+        "type" : "nested"
+      },
+      "encrypt_hero_name" : {
+        "type" : "boolean"
+      }
+    }
+  }
+}

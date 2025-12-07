@@ -1,0 +1,15 @@
+{
+  "mappings" : {
+    "properties" : {
+      "country" : {
+        "type" : "keyword"
+      },
+      "name" : {
+        "type" : "keyword"
+      },
+      "state" : {
+        "type" : "keyword"
+      }
+    }
+  }
+}

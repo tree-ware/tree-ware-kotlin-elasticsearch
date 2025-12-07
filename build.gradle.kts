@@ -32,6 +32,7 @@ dependencies {
 
     testImplementation(libs.treeWareKotlinCoreTestFixtures)
     testImplementation(kotlin("test"))
+    testImplementation("com.fasterxml.jackson.core:jackson-databind:2.17.2")
 }
 
 tasks.test {

@@ -1,0 +1,42 @@
+{
+  "mappings" : {
+    "properties" : {
+      "hero_name" : {
+        "type" : "keyword"
+      },
+      "password" : {
+        "type" : "keyword"
+      },
+      "hero_details" : {
+        "type" : "nested"
+      },
+      "main_secret" : {
+        "type" : "keyword"
+      },
+      "keyless" : {
+        "type" : "nested"
+      },
+      "is_hero" : {
+        "type" : "boolean"
+      },
+      "last_name" : {
+        "type" : "keyword"
+      },
+      "id" : {
+        "type" : "keyword"
+      },
+      "relations" : {
+        "type" : "nested"
+      },
+      "first_name" : {
+        "type" : "keyword"
+      },
+      "picture" : {
+        "type" : "binary"
+      },
+      "group" : {
+        "type" : "keyword"
+      }
+    }
+  }
+}

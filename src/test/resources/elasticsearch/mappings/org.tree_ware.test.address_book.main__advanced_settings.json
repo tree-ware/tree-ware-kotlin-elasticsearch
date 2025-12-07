@@ -1,0 +1,9 @@
+{
+  "mappings" : {
+    "properties" : {
+      "border_color" : {
+        "type" : "integer"
+      }
+    }
+  }
+}
