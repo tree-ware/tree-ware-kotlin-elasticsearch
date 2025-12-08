@@ -64,6 +64,6 @@ class CreateIndexRequestsTests {
                 assertEquals(expectedNorm, actual, "Mismatch in CreateIndexRequest body for index: $index")
             }
         }
-        assertEquals(emptyList<String>(), missingGoldens, "Missing golden mapping JSON resources: ${'$'}missingGoldens")
+        assertEquals(emptyList<String>(), missingGoldens, "Missing golden mapping JSON resources: $missingGoldens")
     }
 }
