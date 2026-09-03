@@ -1,30 +1,20 @@
 {
   "mappings" : {
     "properties" : {
-      "settings" : {
-        "type" : "nested"
-      },
-      "persons" : {
-        "type" : "nested"
-      },
       "last_updated" : {
         "type" : "date",
         "format" : "epoch_millis"
       },
-      "cities" : {
-        "type" : "nested"
-      },
-      "name" : {
+      "field_path_" : {
         "type" : "keyword"
       },
-      "sub_tree_persons" : {
-        "type" : "nested"
-      },
-      "clubs" : {
-        "type" : "nested"
-      },
-      "groups" : {
-        "type" : "nested"
+      "name" : {
+        "type" : "text",
+        "fields" : {
+          "keyword" : {
+            "type" : "keyword"
+          }
+        }
       }
     }
   }

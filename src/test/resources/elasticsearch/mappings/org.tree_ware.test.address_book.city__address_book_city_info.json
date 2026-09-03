@@ -2,22 +2,26 @@
   "mappings" : {
     "properties" : {
       "water_body_name" : {
+        "type" : "text",
+        "fields" : {
+          "keyword" : {
+            "type" : "keyword"
+          }
+        }
+      },
+      "field_path_" : {
         "type" : "keyword"
-      },
-      "city" : {
-        "type" : "nested"
-      },
-      "keyless" : {
-        "type" : "nested"
       },
       "is_coastal_city" : {
         "type" : "boolean"
       },
-      "city_center" : {
-        "type" : "nested"
-      },
       "info" : {
-        "type" : "keyword"
+        "type" : "text",
+        "fields" : {
+          "keyword" : {
+            "type" : "keyword"
+          }
+        }
       }
     }
   }

@@ -2,13 +2,31 @@
   "mappings" : {
     "properties" : {
       "country" : {
+        "type" : "text",
+        "fields" : {
+          "keyword" : {
+            "type" : "keyword"
+          }
+        }
+      },
+      "field_path_" : {
         "type" : "keyword"
       },
       "name" : {
-        "type" : "keyword"
+        "type" : "text",
+        "fields" : {
+          "keyword" : {
+            "type" : "keyword"
+          }
+        }
       },
       "state" : {
-        "type" : "keyword"
+        "type" : "text",
+        "fields" : {
+          "keyword" : {
+            "type" : "keyword"
+          }
+        }
       }
     }
   }

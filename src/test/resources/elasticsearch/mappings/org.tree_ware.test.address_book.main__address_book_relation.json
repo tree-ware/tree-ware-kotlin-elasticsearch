@@ -1,6 +1,9 @@
 {
   "mappings" : {
     "properties" : {
+      "field_path_" : {
+        "type" : "keyword"
+      },
       "person" : {
         "type" : "keyword"
       },

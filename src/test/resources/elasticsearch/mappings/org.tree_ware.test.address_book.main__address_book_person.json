@@ -2,34 +2,43 @@
   "mappings" : {
     "properties" : {
       "hero_name" : {
-        "type" : "keyword"
+        "type" : "text",
+        "fields" : {
+          "keyword" : {
+            "type" : "keyword"
+          }
+        }
       },
       "password" : {
         "type" : "keyword"
       },
-      "hero_details" : {
-        "type" : "nested"
-      },
       "main_secret" : {
         "type" : "keyword"
       },
-      "keyless" : {
-        "type" : "nested"
+      "field_path_" : {
+        "type" : "keyword"
       },
       "is_hero" : {
         "type" : "boolean"
       },
       "last_name" : {
-        "type" : "keyword"
+        "type" : "text",
+        "fields" : {
+          "keyword" : {
+            "type" : "keyword"
+          }
+        }
       },
       "id" : {
         "type" : "keyword"
       },
-      "relations" : {
-        "type" : "nested"
-      },
       "first_name" : {
-        "type" : "keyword"
+        "type" : "text",
+        "fields" : {
+          "keyword" : {
+            "type" : "keyword"
+          }
+        }
       },
       "picture" : {
         "type" : "binary"

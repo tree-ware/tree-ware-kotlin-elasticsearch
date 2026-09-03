@@ -1,23 +1,48 @@
 {
   "mappings" : {
     "properties" : {
-      "sub_category" : {
+      "field_path_" : {
         "type" : "keyword"
+      },
+      "sub_category" : {
+        "type" : "text",
+        "fields" : {
+          "keyword" : {
+            "type" : "keyword"
+          }
+        }
       },
       "phone" : {
-        "type" : "keyword"
-      },
-      "keyless" : {
-        "type" : "nested"
+        "type" : "text",
+        "fields" : {
+          "keyword" : {
+            "type" : "keyword"
+          }
+        }
       },
       "name" : {
-        "type" : "keyword"
+        "type" : "text",
+        "fields" : {
+          "keyword" : {
+            "type" : "keyword"
+          }
+        }
       },
       "category" : {
-        "type" : "keyword"
+        "type" : "text",
+        "fields" : {
+          "keyword" : {
+            "type" : "keyword"
+          }
+        }
       },
       "info" : {
-        "type" : "keyword"
+        "type" : "text",
+        "fields" : {
+          "keyword" : {
+            "type" : "keyword"
+          }
+        }
       }
     }
   }

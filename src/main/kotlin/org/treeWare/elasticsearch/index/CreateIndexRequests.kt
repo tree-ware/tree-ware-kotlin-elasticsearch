@@ -12,10 +12,23 @@ import org.treeWare.model.core.EntityModel
 import org.treeWare.model.traversal.TraversalAction
 
 /**
+ * Name of the document field that stores the tree-ware path of the entity instance.
+ * Every index mapping contains this field as a `keyword` so that documents can be
+ * addressed by path (`_id` = `field_path_`) and grouped by path when reading.
+ */
+const val FIELD_PATH = "field_path_"
+
+/**
  * Generates a list of CreateIndexRequest instances for all entities in the meta-model.
  * The index name for each entity is a concatenation of the package name and entity name with "__" as separator.
- * Each field in the entity is added as a property in the index mappings with a type derived from the
- * meta-model field type.
+ * Each non-composition field in the entity is added as a property in the index mappings with a type derived
+ * from the meta-model field type. Composition fields are skipped: every entity instance is stored as its own
+ * document in its entity's dedicated index, so there is no need for nested composition mappings.
+ * Every mapping also contains a `field_path_` keyword field identifying the entity instance's tree-ware path.
+ *
+ * String fields are mapped to `text` (with a `keyword` multi-field for exact matches) so that any text in any
+ * field can be found with full-text search. All other field types keep exact-match mappings (`keyword`,
+ * numbers, `boolean`, `date`, `binary`).
  *
  * @param metaModel The meta-model to process.
  * @return A list of CreateIndexRequest instances, one for each entity in the meta-model.
@@ -47,6 +60,9 @@ private class CreateIndexRequestsVisitor : AbstractLeader1MetaModelVisitor<Trave
         val builder = currentTypeMappingBuilder ?: return TraversalAction.CONTINUE
         val fieldName = getMetaName(leaderFieldMeta1)
         val fieldType = getFieldTypeMeta(leaderFieldMeta1) ?: return TraversalAction.CONTINUE
+        // Compositions are skipped: each entity instance is stored as its own
+        // document in its entity's dedicated index.
+        if (fieldType == FieldType.COMPOSITION) return TraversalAction.CONTINUE
 
         builder.properties(fieldName) { p: Property.Builder ->
             when (fieldType) {
@@ -64,7 +80,8 @@ private class CreateIndexRequestsVisitor : AbstractLeader1MetaModelVisitor<Trave
                 FieldType.BIG_INTEGER -> p.keyword { it }
                 FieldType.BIG_DECIMAL -> p.keyword { it }
                 FieldType.TIMESTAMP -> p.date { it.format("epoch_millis") }
-                FieldType.STRING -> p.keyword { it }
+                // Full-text searchable, with a keyword multi-field for exact matches.
+                FieldType.STRING -> p.text { t -> t.fields("keyword") { f -> f.keyword { it } } }
                 FieldType.UUID -> p.keyword { it }
                 FieldType.BLOB -> p.binary { it }
                 FieldType.PASSWORD1WAY -> p.keyword { it }
@@ -72,11 +89,8 @@ private class CreateIndexRequestsVisitor : AbstractLeader1MetaModelVisitor<Trave
                 FieldType.ALIAS -> p.keyword { it }
                 FieldType.ENUMERATION -> p.integer { it }
                 FieldType.ASSOCIATION -> p.keyword { it }
-                FieldType.COMPOSITION -> {
-                    // Map compositions to nested for simplicity (both set and single)
-                    // This allows querying inner fields if needed.
-                    p.nested { it }
-                }
+                // Unreachable: compositions are skipped before mapping (see above).
+                FieldType.COMPOSITION -> error("Composition fields must be skipped, not mapped")
             }
         }
         return TraversalAction.CONTINUE
@@ -85,6 +99,8 @@ private class CreateIndexRequestsVisitor : AbstractLeader1MetaModelVisitor<Trave
     override fun leaveEntityMeta(leaderEntityMeta1: EntityModel) {
         val entityName = currentEntityName ?: return
         val typeMappingBuilder = currentTypeMappingBuilder ?: return
+        // Path of the entity instance; also used as the document `_id` (see work plan).
+        typeMappingBuilder.properties(FIELD_PATH) { p: Property.Builder -> p.keyword { it } }
         val indexName = "${currentPackageName}__${entityName}"
         val request = CreateIndexRequest.Builder()
             .index(indexName)

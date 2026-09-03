@@ -1,14 +1,24 @@
 {
   "mappings" : {
     "properties" : {
-      "sub_groups" : {
-        "type" : "nested"
+      "field_path_" : {
+        "type" : "keyword"
       },
       "name" : {
-        "type" : "keyword"
+        "type" : "text",
+        "fields" : {
+          "keyword" : {
+            "type" : "keyword"
+          }
+        }
       },
       "info" : {
-        "type" : "keyword"
+        "type" : "text",
+        "fields" : {
+          "keyword" : {
+            "type" : "keyword"
+          }
+        }
       }
     }
   }

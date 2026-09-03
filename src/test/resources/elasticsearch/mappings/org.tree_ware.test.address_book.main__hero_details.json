@@ -1,11 +1,24 @@
 {
   "mappings" : {
     "properties" : {
-      "strengths" : {
+      "field_path_" : {
         "type" : "keyword"
       },
+      "strengths" : {
+        "type" : "text",
+        "fields" : {
+          "keyword" : {
+            "type" : "keyword"
+          }
+        }
+      },
       "weaknesses" : {
-        "type" : "keyword"
+        "type" : "text",
+        "fields" : {
+          "keyword" : {
+            "type" : "keyword"
+          }
+        }
       }
     }
   }
