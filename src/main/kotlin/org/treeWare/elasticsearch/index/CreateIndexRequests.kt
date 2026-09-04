@@ -41,14 +41,8 @@ fun createIndexRequests(metaModel: EntityModel): List<CreateIndexRequest> {
 
 private class CreateIndexRequestsVisitor : AbstractLeader1MetaModelVisitor<TraversalAction>(TraversalAction.CONTINUE) {
     val indexRequests = mutableListOf<CreateIndexRequest>()
-    private var currentPackageName = ""
     private var currentEntityName: String? = null
     private var currentTypeMappingBuilder: TypeMapping.Builder? = null
-
-    override fun visitPackageMeta(leaderPackageMeta1: EntityModel): TraversalAction {
-        currentPackageName = getMetaName(leaderPackageMeta1)
-        return TraversalAction.CONTINUE
-    }
 
     override fun visitEntityMeta(leaderEntityMeta1: EntityModel): TraversalAction {
         currentEntityName = getMetaName(leaderEntityMeta1)
@@ -99,9 +93,9 @@ private class CreateIndexRequestsVisitor : AbstractLeader1MetaModelVisitor<Trave
     }
 
     override fun leaveEntityMeta(leaderEntityMeta1: EntityModel) {
-        val entityName = currentEntityName ?: return
+        if (currentEntityName == null) return
         val typeMappingBuilder = currentTypeMappingBuilder ?: return
-        val indexName = "${currentPackageName}__${entityName}"
+        val indexName = getIndexName(leaderEntityMeta1)
         val request = CreateIndexRequest.Builder()
             .index(indexName)
             .mappings(typeMappingBuilder.build())

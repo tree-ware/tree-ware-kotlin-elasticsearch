@@ -1,0 +1,26 @@
+{
+  "set_": "create",
+  "name": "Super Heroes",
+  "persons": [
+    {
+      "set_": "create",
+      "id": "cc477201-48ec-4367-83a4-7fdbd92f8a6f",
+      "first_name": "Clark",
+      "last_name": "Kent",
+      "is_hero": false,
+      "keyless": {
+        "set_": "create",
+        "name": "Clark's keyless data",
+        "keyless_child": {
+          "set_": "create",
+          "name": "keyless grandchild"
+        },
+        "keyed_child": {
+          "set_": "create",
+          "name": "keyed grandchild",
+          "other": 42
+        }
+      }
+    }
+  ]
+}

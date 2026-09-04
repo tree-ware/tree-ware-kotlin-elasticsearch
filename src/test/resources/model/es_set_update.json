@@ -1,0 +1,17 @@
+{
+  "set_": "update",
+  "name": "Super Heroes Updated",
+  "settings": {
+    "set_": "update",
+    "last_name_first": false,
+    "background_color": "green"
+  },
+  "persons": [
+    {
+      "set_": "update",
+      "id": "cc477201-48ec-4367-83a4-7fdbd92f8a6f",
+      "first_name": "Clark Joseph",
+      "is_hero": true
+    }
+  ]
+}
