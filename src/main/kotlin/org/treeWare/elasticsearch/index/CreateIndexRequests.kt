@@ -53,6 +53,8 @@ private class CreateIndexRequestsVisitor : AbstractLeader1MetaModelVisitor<Trave
     override fun visitEntityMeta(leaderEntityMeta1: EntityModel): TraversalAction {
         currentEntityName = getMetaName(leaderEntityMeta1)
         currentTypeMappingBuilder = TypeMapping.Builder()
+        // Path of the entity instance; also used as the document `_id` (see work plan).
+        currentTypeMappingBuilder?.properties(FIELD_PATH) { p: Property.Builder -> p.keyword { it } }
         return TraversalAction.CONTINUE
     }
 
@@ -87,7 +89,7 @@ private class CreateIndexRequestsVisitor : AbstractLeader1MetaModelVisitor<Trave
                 FieldType.PASSWORD1WAY -> p.keyword { it }
                 FieldType.PASSWORD2WAY -> p.keyword { it }
                 FieldType.ALIAS -> p.keyword { it }
-                FieldType.ENUMERATION -> p.integer { it }
+                FieldType.ENUMERATION -> p.keyword { it }
                 FieldType.ASSOCIATION -> p.keyword { it }
                 // Unreachable: compositions are skipped before mapping (see above).
                 FieldType.COMPOSITION -> error("Composition fields must be skipped, not mapped")
@@ -99,8 +101,6 @@ private class CreateIndexRequestsVisitor : AbstractLeader1MetaModelVisitor<Trave
     override fun leaveEntityMeta(leaderEntityMeta1: EntityModel) {
         val entityName = currentEntityName ?: return
         val typeMappingBuilder = currentTypeMappingBuilder ?: return
-        // Path of the entity instance; also used as the document `_id` (see work plan).
-        typeMappingBuilder.properties(FIELD_PATH) { p: Property.Builder -> p.keyword { it } }
         val indexName = "${currentPackageName}__${entityName}"
         val request = CreateIndexRequest.Builder()
             .index(indexName)

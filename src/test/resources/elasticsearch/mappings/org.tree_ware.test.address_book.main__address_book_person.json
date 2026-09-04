@@ -12,10 +12,10 @@
       "password" : {
         "type" : "keyword"
       },
-      "main_secret" : {
+      "field_path_" : {
         "type" : "keyword"
       },
-      "field_path_" : {
+      "main_secret" : {
         "type" : "keyword"
       },
       "is_hero" : {

@@ -5,7 +5,7 @@
         "type" : "keyword"
       },
       "border_color" : {
-        "type" : "integer"
+        "type" : "keyword"
       }
     }
   }

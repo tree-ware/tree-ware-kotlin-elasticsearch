@@ -1,10 +1,10 @@
 {
   "mappings" : {
     "properties" : {
-      "background_color" : {
-        "type" : "integer"
-      },
       "field_path_" : {
+        "type" : "keyword"
+      },
+      "background_color" : {
         "type" : "keyword"
       },
       "last_name_first" : {
