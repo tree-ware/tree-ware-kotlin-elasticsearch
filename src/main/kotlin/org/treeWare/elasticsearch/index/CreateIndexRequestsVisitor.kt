@@ -13,9 +13,9 @@ import org.treeWare.model.traversal.TraversalAction
 /**
  * Name of the document field that stores the tree-ware path of the entity instance.
  * Every index mapping contains this field as a `keyword` so that documents can be
- * addressed by path (`_id` = `field_path_`) and grouped by path when reading.
+ * addressed by path (`_id` = `entity_path_`) and grouped by path when reading.
  */
-const val FIELD_PATH = "field_path_"
+const val ENTITY_PATH_FIELD_NAME = "entity_path_"
 
 class CreateIndexRequestsVisitor : AbstractLeader1MetaModelVisitor<TraversalAction>(TraversalAction.CONTINUE) {
     val indexRequests = mutableListOf<CreateIndexRequest>()
@@ -26,7 +26,7 @@ class CreateIndexRequestsVisitor : AbstractLeader1MetaModelVisitor<TraversalActi
         currentEntityName = getMetaName(leaderEntityMeta1)
         currentTypeMappingBuilder = TypeMapping.Builder()
         // Path of the entity instance; also used as the document `_id` (see work plan).
-        currentTypeMappingBuilder?.properties(FIELD_PATH) { p: Property.Builder -> p.keyword { it } }
+        currentTypeMappingBuilder?.properties(ENTITY_PATH_FIELD_NAME) { p: Property.Builder -> p.keyword { it } }
         return TraversalAction.CONTINUE
     }
 

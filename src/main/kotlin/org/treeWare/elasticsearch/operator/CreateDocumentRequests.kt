@@ -1,6 +1,6 @@
 package org.treeWare.elasticsearch.operator
 
-import org.treeWare.elasticsearch.index.FIELD_PATH
+import org.treeWare.elasticsearch.index.ENTITY_PATH_FIELD_NAME
 import org.treeWare.elasticsearch.operator.delegate.ElasticsearchSetDelegate
 import org.treeWare.model.core.*
 import org.treeWare.model.operator.Response
@@ -8,7 +8,7 @@ import org.treeWare.model.operator.Response
 /**
  * A write operation for a single entity instance.
  *
- * `_id` of the Elasticsearch document is the [entityPath]; [FIELD_PATH] is also
+ * `_id` of the Elasticsearch document is the [entityPath]; [ENTITY_PATH_FIELD_NAME] is also
  * stored in the document `_source` (for [Index]) so that `get` can group hits
  * by path.
  *
@@ -41,7 +41,7 @@ sealed interface DocumentOperation {
  * generation: pure request generation with no client interaction.
  *
  * - `CREATE` and `UPDATE` entities produce [DocumentOperation.Index] with a
- * source map containing [FIELD_PATH], key fields and all other single-valued
+ * source map containing [ENTITY_PATH_FIELD_NAME], key fields and all other single-valued
  * fields of the entity. Composition fields are skipped: each entity instance
  * is stored as its own document in its entity's dedicated index.
  * - `DELETE` entities produce [DocumentOperation.Delete].

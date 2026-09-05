@@ -1,25 +1,25 @@
 [ {
-  "field_path_" : "/",
+  "entity_path_" : "/",
   "index" : "org.tree_ware.test.address_book.main__address_book_root",
   "op" : "delete"
 }, {
-  "field_path_" : "/settings",
+  "entity_path_" : "/settings",
   "index" : "org.tree_ware.test.address_book.main__address_book_settings",
   "op" : "delete"
 }, {
-  "field_path_" : "/settings/advanced",
+  "entity_path_" : "/settings/advanced",
   "index" : "org.tree_ware.test.address_book.main__advanced_settings",
   "op" : "delete"
 }, {
-  "field_path_" : "/persons/cc477201-48ec-4367-83a4-7fdbd92f8a6f",
+  "entity_path_" : "/persons/cc477201-48ec-4367-83a4-7fdbd92f8a6f",
   "index" : "org.tree_ware.test.address_book.main__address_book_person",
   "op" : "delete"
 }, {
-  "field_path_" : "/persons/cc477201-48ec-4367-83a4-7fdbd92f8a6f/relations/05ade278-4b44-43da-a0cc-14463854e397",
+  "entity_path_" : "/persons/cc477201-48ec-4367-83a4-7fdbd92f8a6f/relations/05ade278-4b44-43da-a0cc-14463854e397",
   "index" : "org.tree_ware.test.address_book.main__address_book_relation",
   "op" : "delete"
 }, {
-  "field_path_" : "/persons/a8aacf55-7810-4b43-afe5-4344f25435fd",
+  "entity_path_" : "/persons/a8aacf55-7810-4b43-afe5-4344f25435fd",
   "index" : "org.tree_ware.test.address_book.main__address_book_person",
   "op" : "delete"
 } ]

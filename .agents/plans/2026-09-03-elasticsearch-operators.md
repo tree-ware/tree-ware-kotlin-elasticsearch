@@ -6,7 +6,7 @@ It is ok to update the existing `tree-ware-kotlin-elasticsearch` code as needed.
 ## Success Criteria
 
 - A caller can create indices, write a tree-ware tree to Elasticsearch, and read it back via a search string, using only the new ES operators.
-- Every stored document carries a `field_path_` field (same as the MySQL `field_path_`); `get` reconstructs the response tree by combining paths from hits across all indices.
+- Every stored document carries an `entity_path_` field (similar to the MySQL `field_path_`); `get` reconstructs the response tree by combining paths from hits across all indices.
 - Each implementation step below is independently committable in `tree-ware-kotlin-elasticsearch` with its own passing unit tests, per `AGENTS.md`.
 
 ## Context And Current Facts
@@ -28,25 +28,25 @@ It is ok to update the existing `tree-ware-kotlin-elasticsearch` code as needed.
 
 ## Key Decisions
 
-1. **Reuse `CreateIndexRequests` as the DDL generator; add an execution function.** It already encodes the `<package>__<entity>` naming and field mappings. Add `createIndices(client, metaModel)` mirroring MySQL `CreateDatabase.kt`, plus a `field_path_` field in each mapping (needed for get). Alternative (a separate DDL model) rejected: duplicates tested behavior.
+1. **Reuse `CreateIndexRequests` as the DDL generator; add an execution function.** It already encodes the `<package>__<entity>` naming and field mappings. Add `createIndices(client, metaModel)` mirroring MySQL `CreateDatabase.kt`, plus an `entity_path_` field in each mapping (needed for get). Alternative (a separate DDL model) rejected: duplicates tested behavior.
 2. **Mirror the two-layer API shape.** Pure `generate*Requests(model) -> List<...>` functions (unit-testable, golden-friendly) plus thin `set(model, ..., client)` / `get(searchString, ..., client, responseModel)` executors mirroring `Set.kt`/`Get.kt` signatures (with `logRequests: Boolean = false` instead of `logCommands`). Keeps MySQL familiarity and testability.
-3. **One document per entity instance; `_id` = `field_path_`, `field_path_` also stored in `_source`.** Gives idempotent writes and trivial subtree deletes, and makes get's path-combining direct. Alternative (auto-generated `_id` + field_path_ only in source) rejected: complicates overwrite/delete and dedup.
+3. **One document per entity instance; `_id` = `entity_path_`, `entity_path_` also stored in `_source`.** Gives idempotent writes and trivial subtree deletes, and makes get's path-combining direct. Alternative (auto-generated `_id` + entity_path_ only in source) rejected: complicates overwrite/delete and dedup.
 4. **Write path: flatten via a set-visitor; issue with Bulk API.** The visitor emits per-entity upsert/delete operations (create/update/delete determined the same way `MySqlSetDelegate` uses `SetAux`); the executor sends them as one `_bulk` request per `set()` call with per-item error reporting (`Response.ErrorList`, no partial-commit analog needed — report item errors like `issueCommands()` does). Alternative (one index request per entity) rejected: N round-trips.
-5. **Read path: `query_string` search across all indices, group hits by `field_path_`.** No per-field SELECT/projection layer; decode each hit's source fields into the response model by path, opposite of the write flattener. Custom-field decoding goes through entity delegates (decision 6).
+5. **Read path: `query_string` search across all indices, group hits by `entity_path_`.** No per-field SELECT/projection layer; decode each hit's source fields into the response model by path, opposite of the write flattener. Custom-field decoding goes through entity delegates (decision 6).
 6. **Keep the delegate-registry extension pattern.** Add `RegisterElasticsearchOperatorDelegates.kt` mirroring `RegisterMySqlOperatorDelegates.kt`; ship geo-point support first (ES has a native `geo_point` type — mapping + ser/deser delegate), since MySQL already singles it out and the test meta-model contains `org.tree_ware.meta_model.geo__point`.
 
 ## Recommended Approach
 
-Follow the MySQL layering exactly: pure generation first (goldens, no client), then executors (stub/fake-client unit tests), then delegates, then live integration tests. Add the `field_path_` field to mappings up front (Step 1 touches goldens deliberately so later steps never invalidate earlier tests). Keep public function signatures parallel to `Set.kt`/`Get.kt` so server/e2e code can adopt them later without relearning.
+Follow the MySQL layering exactly: pure generation first (goldens, no client), then executors (stub/fake-client unit tests), then delegates, then live integration tests. Add the `entity_path_` field to mappings up front (Step 1 touches goldens deliberately so later steps never invalidate earlier tests). Keep public function signatures parallel to `Set.kt`/`Get.kt` so server/e2e code can adopt them later without relearning.
 Follow the same sub-package structure as `tree-ware-kotlin-mysql` as far as possible.
 
 ## Work Plan
 
 Each step is one independent commit in `tree-ware-kotlin-elasticsearch` (commit per `AGENTS.md`: `<AI>` prefix + prompt/plan/model/time).
 
-- **Step 0 — Update index mappings: add `field_path_` field + index-creation executor, drop mapping for compositions (since each entity has a dedicated index), check if any of the existing mappings can be improved (the goal is to be able to search for any text in any field).**
+- **Step 0 — Update index mappings: add `entity_path_` field + index-creation executor, drop mapping for compositions (since each entity has a dedicated index), check if any of the existing mappings can be improved (the goal is to be able to search for any text in any field).**
   Surfaces: `index/CreateIndexRequests.kt`.
-  Tests: update `CreateIndexRequestsTests` accordingly (assert `field_path_` in every mapping).
+  Tests: update `CreateIndexRequestsTests` accordingly (assert `entity_path_` in every mapping).
   Depends on: nothing.
 
 - **Step 1 — Index-creation executor.**
@@ -55,7 +55,7 @@ Each step is one independent commit in `tree-ware-kotlin-elasticsearch` (commit 
   Depends on: Step 0
 
 - **Step 2 — Pure write-request generation (ES analog of DML generation).**
-  Surfaces: new `operator/GenerateDocumentRequests.kt` — a model visitor flattening a tree into `List<DocumentOperation>` (`Index(field_path_, index, source-map)` / `Delete(field_path_, index)`), embedding `field_path_` in every source; index name resolution reused from Step 1.
+  Surfaces: new `operator/GenerateDocumentRequests.kt` — a model visitor flattening a tree into `List<DocumentOperation>` (`Index(entity_path_, index, source-map)` / `Delete(entity_path_, index)`), embedding `entity_path_` in every source; index name resolution reused from Step 1.
   Tests: new `GenerateDocumentRequestsTests` with golden JSON per entity (address-book fixtures, mirroring `GenerateSetCommandsTests.kt` + `GenerateMappingsGoldens.kt` pattern); covers create, update, delete, keyless/singleton entities.
   Depends on: Step 1. No client code.
 
@@ -65,8 +65,8 @@ Each step is one independent commit in `tree-ware-kotlin-elasticsearch` (commit 
   Depends on: Step 2. Commits independently (Step 2 stays green without it).
 
 - **Step 4 — `get` operator (search string → path-combined response).**
-  Surfaces: new `operator/Get.kt` (`fun get(searchString, ..., client, responseModel, logRequests = false): Response`): `search(q = searchString, index = "_all")`, group hits by `field_path_` source field, decode remaining source fields into the response tree.
-  Tests: `GetTests` with canned search hits (multi-index hits, empty result, missing-`field_path_` hit, decode error); assert combined tree equals expected (the "simpler than MySQL" contract).
+  Surfaces: new `operator/Get.kt` (`fun get(searchString, ..., client, responseModel, logRequests = false): Response`): `search(q = searchString, index = "_all")`, group hits by `entity_path_` source field, decode remaining source fields into the response tree.
+  Tests: `GetTests` with canned search hits (multi-index hits, empty result, missing-`entity_path_` hit, decode error); assert combined tree equals expected (the "simpler than MySQL" contract).
   Depends on: nothing at runtime (reads whatever is indexed); logically after Step 1. Independently committable and testable with fixtures.
 
 - **Step 5 — Entity delegates + geo-point support.**
@@ -95,4 +95,4 @@ Each step is one independent commit in `tree-ware-kotlin-elasticsearch` (commit 
 ## Open Questions
 
 - Bulk sizing/retry policy for very large trees (default: single bulk call, no retry; acceptable for v1, tunable later).
-- Whether subtree delete should delete by `_id` list from the model or by `field_path_` prefix query — recommended: `_id` list from the flattened model in Step 2 (exact, no query-side effects).
+- Whether subtree delete should delete by `_id` list from the model or by `entity_path_` prefix query — recommended: `_id` list from the flattened model in Step 2 (exact, no query-side effects).

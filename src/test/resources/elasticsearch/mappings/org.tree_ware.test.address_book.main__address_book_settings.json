@@ -1,14 +1,14 @@
 {
   "mappings" : {
     "properties" : {
-      "field_path_" : {
-        "type" : "keyword"
-      },
       "background_color" : {
         "type" : "keyword"
       },
       "last_name_first" : {
         "type" : "boolean"
+      },
+      "entity_path_" : {
+        "type" : "keyword"
       },
       "encrypt_hero_name" : {
         "type" : "boolean"

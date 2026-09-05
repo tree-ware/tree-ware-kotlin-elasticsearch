@@ -1,7 +1,7 @@
 package org.treeWare.elasticsearch.operator.delegate
 
 import okio.Buffer
-import org.treeWare.elasticsearch.index.FIELD_PATH
+import org.treeWare.elasticsearch.index.ENTITY_PATH_FIELD_NAME
 import org.treeWare.elasticsearch.index.getIndexName
 import org.treeWare.elasticsearch.operator.DocumentOperation
 import org.treeWare.metaModel.FieldType
@@ -44,7 +44,7 @@ internal class ElasticsearchSetDelegate : SetDelegate {
         when (setAux) {
             SetAux.CREATE, SetAux.UPDATE -> {
                 val source = mutableMapOf<String, Any?>()
-                source[FIELD_PATH] = entityPath
+                source[ENTITY_PATH_FIELD_NAME] = entityPath
                 keys.forEach { addField(source, entityPath, it) }
                 associations.forEach { addField(source, entityPath, it) }
                 other.forEach { addField(source, entityPath, it) }

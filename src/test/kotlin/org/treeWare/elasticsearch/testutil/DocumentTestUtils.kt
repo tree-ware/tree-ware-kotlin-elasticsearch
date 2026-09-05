@@ -21,13 +21,13 @@ internal object DocumentTestUtils {
         is Index -> mapOf(
             "op" to "index",
             "index" to index,
-            "field_path_" to entityPath,
+            "entity_path_" to entityPath,
             "source" to source
         )
         is Delete -> mapOf(
             "op" to "delete",
             "index" to index,
-            "field_path_" to entityPath
+            "entity_path_" to entityPath
         )
     }
 }

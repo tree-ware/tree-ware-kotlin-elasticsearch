@@ -1,11 +1,11 @@
 {
   "mappings" : {
     "properties" : {
-      "field_path_" : {
-        "type" : "keyword"
-      },
       "latitude" : {
         "type" : "double"
+      },
+      "entity_path_" : {
+        "type" : "keyword"
       },
       "longitude" : {
         "type" : "double"

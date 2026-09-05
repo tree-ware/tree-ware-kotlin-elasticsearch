@@ -10,7 +10,7 @@ private val logger = logging()
  * Creates one index per meta-model entity, mirroring MySQL `createDatabase`.
  *
  * Index names and mappings come from [createIndexRequests]; this function only
- * issues them to Elasticsearch. Every mapping contains a [FIELD_PATH] keyword
+ * issues them to Elasticsearch. Every mapping contains an [ENTITY_PATH_FIELD_NAME] keyword
  * field identifying the entity instance's tree-ware path.
  *
  * @param client Elasticsearch client used to issue the create-index requests.

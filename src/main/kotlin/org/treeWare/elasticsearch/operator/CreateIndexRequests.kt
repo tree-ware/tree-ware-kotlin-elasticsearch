@@ -11,7 +11,7 @@ import org.treeWare.model.core.EntityModel
  * Each non-composition field in the entity is added as a property in the index mappings with a type derived
  * from the meta-model field type. Composition fields are skipped: every entity instance is stored as its own
  * document in its entity's dedicated index, so there is no need for nested composition mappings.
- * Every mapping also contains a `field_path_` keyword field identifying the entity instance's tree-ware path.
+ * Every mapping also contains a `entity_path_` keyword field identifying the entity instance's tree-ware path.
  *
  * String fields are mapped to `text` (with a `keyword` multi-field for exact matches) so that any text in any
  * field can be found with full-text search. All other field types keep exact-match mappings (`keyword`,

@@ -12,9 +12,6 @@
       "password" : {
         "type" : "keyword"
       },
-      "field_path_" : {
-        "type" : "keyword"
-      },
       "main_secret" : {
         "type" : "keyword"
       },
@@ -30,6 +27,9 @@
         }
       },
       "id" : {
+        "type" : "keyword"
+      },
+      "entity_path_" : {
         "type" : "keyword"
       },
       "first_name" : {

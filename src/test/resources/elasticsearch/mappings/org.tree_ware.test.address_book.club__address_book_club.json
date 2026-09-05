@@ -1,9 +1,6 @@
 {
   "mappings" : {
     "properties" : {
-      "field_path_" : {
-        "type" : "keyword"
-      },
       "sub_category" : {
         "type" : "text",
         "fields" : {
@@ -27,6 +24,9 @@
             "type" : "keyword"
           }
         }
+      },
+      "entity_path_" : {
+        "type" : "keyword"
       },
       "category" : {
         "type" : "text",

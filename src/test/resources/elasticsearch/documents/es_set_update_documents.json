@@ -1,26 +1,26 @@
 [ {
-  "field_path_" : "/",
+  "entity_path_" : "/",
   "index" : "org.tree_ware.test.address_book.main__address_book_root",
   "op" : "index",
   "source" : {
-    "field_path_" : "/",
+    "entity_path_" : "/",
     "name" : "Super Heroes Updated"
   }
 }, {
-  "field_path_" : "/settings",
+  "entity_path_" : "/settings",
   "index" : "org.tree_ware.test.address_book.main__address_book_settings",
   "op" : "index",
   "source" : {
     "background_color" : 4,
-    "field_path_" : "/settings",
+    "entity_path_" : "/settings",
     "last_name_first" : false
   }
 }, {
-  "field_path_" : "/persons/cc477201-48ec-4367-83a4-7fdbd92f8a6f",
+  "entity_path_" : "/persons/cc477201-48ec-4367-83a4-7fdbd92f8a6f",
   "index" : "org.tree_ware.test.address_book.main__address_book_person",
   "op" : "index",
   "source" : {
-    "field_path_" : "/persons/cc477201-48ec-4367-83a4-7fdbd92f8a6f",
+    "entity_path_" : "/persons/cc477201-48ec-4367-83a4-7fdbd92f8a6f",
     "first_name" : "Clark Joseph",
     "id" : "cc477201-48ec-4367-83a4-7fdbd92f8a6f",
     "is_hero" : true

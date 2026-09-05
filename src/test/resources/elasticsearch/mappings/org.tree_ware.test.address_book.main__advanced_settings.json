@@ -1,10 +1,10 @@
 {
   "mappings" : {
     "properties" : {
-      "field_path_" : {
+      "border_color" : {
         "type" : "keyword"
       },
-      "border_color" : {
+      "entity_path_" : {
         "type" : "keyword"
       }
     }

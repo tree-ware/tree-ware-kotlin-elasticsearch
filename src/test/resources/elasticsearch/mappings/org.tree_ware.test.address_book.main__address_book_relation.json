@@ -1,13 +1,13 @@
 {
   "mappings" : {
     "properties" : {
-      "field_path_" : {
-        "type" : "keyword"
-      },
       "person" : {
         "type" : "keyword"
       },
       "id" : {
+        "type" : "keyword"
+      },
+      "entity_path_" : {
         "type" : "keyword"
       },
       "relationship" : {

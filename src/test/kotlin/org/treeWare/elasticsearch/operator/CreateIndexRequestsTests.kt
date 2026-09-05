@@ -1,6 +1,6 @@
 package org.treeWare.elasticsearch.operator
 
-import org.treeWare.elasticsearch.index.FIELD_PATH
+import org.treeWare.elasticsearch.index.ENTITY_PATH_FIELD_NAME
 import org.treeWare.elasticsearch.testutil.JsonTestUtils
 import org.treeWare.metaModel.addressBookMetaModel
 import kotlin.test.Test
@@ -56,14 +56,14 @@ class CreateIndexRequestsTests {
             }
         }
 
-        // Every mapping must carry the field_path_ keyword field.
+        // Every mapping must carry the entity_path_ keyword field.
         indexRequests.forEach { req ->
             val properties = req.mappings()?.properties() ?: emptyMap()
-            assertTrue(properties.containsKey(FIELD_PATH), "Missing $FIELD_PATH in index: ${req.index()}")
+            assertTrue(properties.containsKey(ENTITY_PATH_FIELD_NAME), "Missing $ENTITY_PATH_FIELD_NAME in index: ${req.index()}")
             assertEquals(
                 true,
-                properties[FIELD_PATH]?.isKeyword,
-                "Field $FIELD_PATH must be a keyword in index: ${req.index()}"
+                properties[ENTITY_PATH_FIELD_NAME]?.isKeyword,
+                "Field $ENTITY_PATH_FIELD_NAME must be a keyword in index: ${req.index()}"
             )
         }
 

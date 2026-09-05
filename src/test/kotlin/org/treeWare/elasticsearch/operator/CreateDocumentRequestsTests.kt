@@ -1,6 +1,6 @@
 package org.treeWare.elasticsearch.operator
 
-import org.treeWare.elasticsearch.index.FIELD_PATH
+import org.treeWare.elasticsearch.index.ENTITY_PATH_FIELD_NAME
 import org.treeWare.elasticsearch.testutil.DocumentTestUtils
 import org.treeWare.metaModel.addressBookRootEntityMeta
 import org.treeWare.model.core.MutableEntityModel
@@ -37,7 +37,7 @@ class CreateDocumentRequestsTests {
     }
 
     @Test
-    fun `Create covers singleton and keyed entities with field_path_ in every source`() {
+    fun `Create covers singleton and keyed entities with entity_path_ in every source`() {
         val operations = generateFor("es_set_create.json")
         assertTrue(operations.isNotEmpty())
         // Singleton entities (root, settings) have no keys but still produce documents.
@@ -49,9 +49,9 @@ class CreateDocumentRequestsTests {
         // Composition-key entities are flattened: city info lands in its own index.
         assertTrue(indices.contains("org.tree_ware.test.address_book.city__address_book_city_info"))
         assertTrue(indices.contains("org.tree_ware.meta_model.geo__point"))
-        // Every index operation embeds field_path_ in its source.
+        // Every index operation embeds entity_path_ in its source.
         operations.filterIsInstance<DocumentOperation.Index>().forEach { op ->
-            assertEquals(op.entityPath, op.source[FIELD_PATH])
+            assertEquals(op.entityPath, op.source[ENTITY_PATH_FIELD_NAME])
         }
         // Root document uses "/" as its path.
         val root = operations.filterIsInstance<DocumentOperation.Index>()

@@ -9,11 +9,11 @@
           }
         }
       },
-      "field_path_" : {
-        "type" : "keyword"
-      },
       "is_coastal_city" : {
         "type" : "boolean"
+      },
+      "entity_path_" : {
+        "type" : "keyword"
       },
       "info" : {
         "type" : "text",
