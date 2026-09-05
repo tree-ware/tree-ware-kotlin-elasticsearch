@@ -1,4 +1,4 @@
-package org.treeWare.elasticsearch.index
+package org.treeWare.elasticsearch.operator
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient
 import org.lighthousegames.logging.logging

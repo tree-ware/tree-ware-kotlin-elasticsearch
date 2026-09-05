@@ -1,13 +1,14 @@
-package org.treeWare.elasticsearch.index
+package org.treeWare.elasticsearch.testutil
 
 import co.elastic.clients.elasticsearch.indices.CreateIndexRequest
 import co.elastic.clients.json.JsonpMapper
 import co.elastic.clients.json.JsonpUtils
+import co.elastic.clients.json.SimpleJsonpMapper
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 
 internal object JsonTestUtils {
-    private val mapper: JsonpMapper = co.elastic.clients.json.SimpleJsonpMapper()
+    private val mapper: JsonpMapper = SimpleJsonpMapper()
 
     private val objectMapper = ObjectMapper()
         .enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS)

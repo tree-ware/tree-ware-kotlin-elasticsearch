@@ -38,6 +38,7 @@ It is ok to update the existing `tree-ware-kotlin-elasticsearch` code as needed.
 ## Recommended Approach
 
 Follow the MySQL layering exactly: pure generation first (goldens, no client), then executors (stub/fake-client unit tests), then delegates, then live integration tests. Add the `field_path_` field to mappings up front (Step 1 touches goldens deliberately so later steps never invalidate earlier tests). Keep public function signatures parallel to `Set.kt`/`Get.kt` so server/e2e code can adopt them later without relearning.
+Follow the same sub-package structure as `tree-ware-kotlin-mysql` as far as possible.
 
 ## Work Plan
 

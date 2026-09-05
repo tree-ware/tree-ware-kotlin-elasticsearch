@@ -1,6 +1,7 @@
 package org.treeWare.elasticsearch.operator
 
 import org.treeWare.elasticsearch.index.FIELD_PATH
+import org.treeWare.elasticsearch.testutil.DocumentTestUtils
 import org.treeWare.metaModel.addressBookRootEntityMeta
 import org.treeWare.model.core.MutableEntityModel
 import org.treeWare.model.decodeJsonFileIntoEntity
@@ -11,12 +12,20 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class GenerateDocumentRequestsTests {
+/** Set-model inputs (in `src/test/resources/model/`) covered by document-operation golden files. */
+internal val SET_INPUT_FILES = listOf(
+    "es_set_create.json",
+    "es_set_update.json",
+    "es_set_delete.json",
+    "es_set_create_keyless.json"
+)
+
+class CreateDocumentRequestsTests {
     private val auxDecodingFactory =
         MultiAuxDecodingStateMachineFactory(SET_AUX_NAME to { SetAuxStateMachine(it) })
 
     @Test
-    fun `Document operations match goldens`() {
+    fun `Document operations match golden files`() {
         SET_INPUT_FILES.forEach { inputFile ->
             val operations = generateFor(inputFile)
             val actual = DocumentTestUtils.toNormalizedJson(operations)
@@ -42,12 +51,12 @@ class GenerateDocumentRequestsTests {
         assertTrue(indices.contains("org.tree_ware.meta_model.geo__point"))
         // Every index operation embeds field_path_ in its source.
         operations.filterIsInstance<DocumentOperation.Index>().forEach { op ->
-            assertEquals(op.fieldPath, op.source[FIELD_PATH])
+            assertEquals(op.entityPath, op.source[FIELD_PATH])
         }
         // Root document uses "/" as its path.
         val root = operations.filterIsInstance<DocumentOperation.Index>()
             .single { it.index.endsWith("__address_book_root") }
-        assertEquals("/", root.fieldPath)
+        assertEquals("/", root.entityPath)
     }
 
     @Test
@@ -63,7 +72,7 @@ class GenerateDocumentRequestsTests {
         val operations = generateFor("es_set_delete.json")
         assertTrue(operations.isNotEmpty())
         assertTrue(operations.all { it is DocumentOperation.Delete })
-        val fieldPaths = operations.map { it.fieldPath }.toSet()
+        val fieldPaths = operations.map { it.entityPath }.toSet()
         assertTrue(fieldPaths.contains("/"))
         assertTrue(fieldPaths.contains("/settings"))
         assertTrue(fieldPaths.any { it.startsWith("/persons/") })
@@ -87,7 +96,7 @@ class GenerateDocumentRequestsTests {
     fun `Model without set aux produces no operations`() {
         val model = MutableEntityModel(addressBookRootEntityMeta, null)
         decodeJsonFileIntoEntity("model/address_book_1.json", entity = model)
-        assertEquals(emptyList(), generateDocumentRequests(model))
+        assertEquals(emptyList(), createDocumentRequests(model))
     }
 
     private fun generateFor(inputFile: String): List<DocumentOperation> {
@@ -97,6 +106,6 @@ class GenerateDocumentRequestsTests {
             multiAuxDecodingStateMachineFactory = auxDecodingFactory,
             entity = model
         )
-        return generateDocumentRequests(model)
+        return createDocumentRequests(model)
     }
 }

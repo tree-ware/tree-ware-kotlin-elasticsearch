@@ -1,5 +1,7 @@
-package org.treeWare.elasticsearch.operator
+package org.treeWare.elasticsearch.testutil
 
+import org.treeWare.elasticsearch.operator.SET_INPUT_FILES
+import org.treeWare.elasticsearch.operator.createDocumentRequests
 import org.treeWare.metaModel.addressBookRootEntityMeta
 import org.treeWare.model.core.MutableEntityModel
 import org.treeWare.model.decodeJsonFileIntoEntity
@@ -11,7 +13,7 @@ import java.nio.file.Path
 import kotlin.test.Ignore
 import kotlin.test.Test
 
-class GenerateDocumentGoldens {
+class GenerateDocumentGoldenFiles {
     @Ignore
     @Test
     fun `Generate golden JSON files for document operations`() {
@@ -25,7 +27,7 @@ class GenerateDocumentGoldens {
                 multiAuxDecodingStateMachineFactory = auxDecodingFactory,
                 entity = model
             )
-            val operations = generateDocumentRequests(model)
+            val operations = createDocumentRequests(model)
             val pretty = DocumentTestUtils.toNormalizedJson(operations)
             Files.writeString(base.resolve(inputFile.replace(".json", "_documents.json")), pretty)
         }

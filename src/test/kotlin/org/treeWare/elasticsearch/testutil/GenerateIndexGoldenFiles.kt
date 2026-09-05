@@ -1,12 +1,13 @@
-package org.treeWare.elasticsearch.index
+package org.treeWare.elasticsearch.testutil
 
+import org.treeWare.elasticsearch.operator.createIndexRequests
 import org.treeWare.metaModel.addressBookMetaModel
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.test.Ignore
 import kotlin.test.Test
 
-class GenerateMappingsGoldens {
+class GenerateIndexGoldenFiles {
     @Ignore
     @Test
     fun `Generate golden JSON files for CreateIndexRequest bodies`(){

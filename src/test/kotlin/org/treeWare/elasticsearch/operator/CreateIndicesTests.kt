@@ -1,8 +1,9 @@
-package org.treeWare.elasticsearch.index
+package org.treeWare.elasticsearch.operator
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient
 import co.elastic.clients.elasticsearch.indices.CreateIndexRequest
-import org.treeWare.elasticsearch.FakeElasticsearchTransport
+import org.treeWare.elasticsearch.testutil.FakeElasticsearchTransport
+import org.treeWare.elasticsearch.index.FIELD_PATH
 import org.treeWare.metaModel.addressBookMetaModel
 import java.io.IOException
 import kotlin.test.Test
@@ -37,8 +38,9 @@ class CreateIndicesTests {
         actualRequests.forEach { request ->
             val properties = request.mappings()?.properties() ?: emptyMap()
             assertTrue(properties.containsKey(FIELD_PATH), "Missing $FIELD_PATH in index: ${request.index()}")
-            assertTrue(
-                properties[FIELD_PATH]?.isKeyword == true,
+            assertEquals(
+                true,
+                properties[FIELD_PATH]?.isKeyword,
                 "Field $FIELD_PATH must be a keyword in index: ${request.index()}"
             )
         }

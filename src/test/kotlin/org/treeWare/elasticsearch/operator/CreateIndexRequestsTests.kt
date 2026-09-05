@@ -1,5 +1,7 @@
-package org.treeWare.elasticsearch.index
+package org.treeWare.elasticsearch.operator
 
+import org.treeWare.elasticsearch.index.FIELD_PATH
+import org.treeWare.elasticsearch.testutil.JsonTestUtils
 import org.treeWare.metaModel.addressBookMetaModel
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -58,11 +60,15 @@ class CreateIndexRequestsTests {
         indexRequests.forEach { req ->
             val properties = req.mappings()?.properties() ?: emptyMap()
             assertTrue(properties.containsKey(FIELD_PATH), "Missing $FIELD_PATH in index: ${req.index()}")
-            assertTrue(properties[FIELD_PATH]?.isKeyword == true, "Field $FIELD_PATH must be a keyword in index: ${req.index()}")
+            assertEquals(
+                true,
+                properties[FIELD_PATH]?.isKeyword,
+                "Field $FIELD_PATH must be a keyword in index: ${req.index()}"
+            )
         }
 
         // Compare serialized request bodies against golden JSON resources
-        val missingGoldens = mutableListOf<String>()
+        val missingGoldenFiles = mutableListOf<String>()
         indexRequests.forEach { req ->
             val index = req.index()
             val actual = JsonTestUtils.normalizeJson(JsonTestUtils.serializeRequestBodyToJson(req))
@@ -70,11 +76,11 @@ class CreateIndexRequestsTests {
             assertFalse(actual.contains(": \"nested\""), "Composition mapping leaked into index: $index")
             val resourcePath = "elasticsearch/mappings/$index.json"
             val expected = this::class.java.classLoader.getResource(resourcePath)?.readText()
-            if (expected == null) missingGoldens.add(resourcePath) else {
+            if (expected == null) missingGoldenFiles.add(resourcePath) else {
                 val expectedNorm = JsonTestUtils.normalizeJson(expected)
                 assertEquals(expectedNorm, actual, "Mismatch in CreateIndexRequest body for index: $index")
             }
         }
-        assertEquals(emptyList<String>(), missingGoldens, "Missing golden mapping JSON resources: $missingGoldens")
+        assertEquals(emptyList(), missingGoldenFiles, "Missing golden mapping JSON resources: $missingGoldenFiles")
     }
 }
