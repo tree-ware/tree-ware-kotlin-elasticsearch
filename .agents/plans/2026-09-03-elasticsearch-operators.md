@@ -55,7 +55,7 @@ Each step is one independent commit in `tree-ware-kotlin-elasticsearch` (commit 
   Depends on: Step 0
 
 - **Step 2 — Pure write-request generation (ES analog of DML generation).**
-  Surfaces: new `operator/GenerateDocumentRequests.kt` — a model visitor flattening a tree into `List<DocumentOperation>` (`Index(entity_path_, index, source-map)` / `Delete(entity_path_, index)`), embedding `entity_path_` in every source; index name resolution reused from Step 1.
+  Surfaces: new `operator/GenerateDocumentRequests.kt` — a model visitor flattening a tree into `List<DocumentOperation>` (`Create(entity_path_, index, source-map)` / `Update(entity_path_, index, partial-source-map)` / `Delete(entity_path_, index)`), embedding `entity_path_` in every source; index name resolution reused from Step 1.
   Tests: new `GenerateDocumentRequestsTests` with golden JSON per entity (address-book fixtures, mirroring `GenerateSetCommandsTests.kt` + `GenerateMappingsGoldens.kt` pattern); covers create, update, delete, keyless/singleton entities.
   Depends on: Step 1. No client code.
 

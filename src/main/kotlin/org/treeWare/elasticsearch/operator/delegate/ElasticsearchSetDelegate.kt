@@ -49,7 +49,7 @@ internal class ElasticsearchSetDelegate : SetDelegate {
                 keys.forEach { addField(source, entityPath, it) }
                 associations.forEach { addField(source, entityPath, it) }
                 other.forEach { addField(source, entityPath, it) }
-                operations.add(DocumentOperation.Index(index, entityPath, source))
+                operations.add(DocumentOperation.Create(index, entityPath, source))
             }
             // Only the updated fields are sent, and they are merged into the
             // existing document (never replacing it). Keys and the entity path

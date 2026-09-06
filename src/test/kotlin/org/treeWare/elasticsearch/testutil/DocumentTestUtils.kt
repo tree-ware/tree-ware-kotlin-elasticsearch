@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import org.treeWare.elasticsearch.operator.DocumentOperation
 import org.treeWare.elasticsearch.operator.DocumentOperation.Delete
-import org.treeWare.elasticsearch.operator.DocumentOperation.Index
+import org.treeWare.elasticsearch.operator.DocumentOperation.Create
 import org.treeWare.elasticsearch.operator.DocumentOperation.Update
 
 internal object DocumentTestUtils {
@@ -19,8 +19,8 @@ internal object DocumentTestUtils {
     }
 
     private fun DocumentOperation.toMap(): Map<String, Any?> = when (this) {
-        is Index -> mapOf(
-            "op" to "index",
+        is Create -> mapOf(
+            "op" to "create",
             "index" to index,
             "entity_path_" to entityPath,
             "source" to source
