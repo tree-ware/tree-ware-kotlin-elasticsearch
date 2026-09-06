@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import okio.Buffer
 import org.treeWare.elasticsearch.index.ENTITY_PATH_FIELD_NAME
 import org.treeWare.elasticsearch.index.getIndexName
-import org.treeWare.elasticsearch.operator.DocumentOperation
+import org.treeWare.elasticsearch.document.DocumentOperation
 import org.treeWare.metaModel.FieldType
 import org.treeWare.model.core.AssociationModel
 import org.treeWare.model.core.ElementModel

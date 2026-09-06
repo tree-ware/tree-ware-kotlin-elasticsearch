@@ -2,10 +2,10 @@ package org.treeWare.elasticsearch.testutil
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
-import org.treeWare.elasticsearch.operator.DocumentOperation
-import org.treeWare.elasticsearch.operator.DocumentOperation.Delete
-import org.treeWare.elasticsearch.operator.DocumentOperation.Create
-import org.treeWare.elasticsearch.operator.DocumentOperation.Update
+import org.treeWare.elasticsearch.document.DocumentOperation
+import org.treeWare.elasticsearch.document.DocumentOperation.Delete
+import org.treeWare.elasticsearch.document.DocumentOperation.Create
+import org.treeWare.elasticsearch.document.DocumentOperation.Update
 
 internal object DocumentTestUtils {
     private val objectMapper = ObjectMapper()

@@ -1,5 +1,6 @@
 package org.treeWare.elasticsearch.operator
 
+import org.treeWare.elasticsearch.document.DocumentOperation
 import org.treeWare.elasticsearch.testutil.DocumentTestUtils
 import org.treeWare.metaModel.addressBookRootEntityMeta
 import org.treeWare.model.core.MutableEntityModel
