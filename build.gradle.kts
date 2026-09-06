@@ -34,6 +34,9 @@ dependencies {
 
     testImplementation(libs.treeWareKotlinCoreTestFixtures)
     testImplementation(kotlin("test"))
+    // Binds the slf4j facade used by lighthousegames logging so that
+    // `logRequests = true` output is observable in tests.
+    testImplementation("org.slf4j:slf4j-simple:2.0.16")
 }
 
 tasks.test {

@@ -1,5 +1,7 @@
 package org.treeWare.elasticsearch.testutil
 
+import co.elastic.clients.elasticsearch.core.BulkRequest
+import co.elastic.clients.elasticsearch.core.BulkResponse
 import co.elastic.clients.elasticsearch.indices.CreateIndexRequest
 import co.elastic.clients.elasticsearch.indices.CreateIndexResponse
 import co.elastic.clients.json.JsonpMapper
@@ -14,18 +16,22 @@ import java.util.function.Function
 /**
  * In-memory fake of [co.elastic.clients.transport.ElasticsearchTransport] for unit tests.
  *
- * Records every request passed to [performRequest] in [requests] and answers
- * create-index requests with an acknowledged [co.elastic.clients.elasticsearch.indices.CreateIndexResponse]. Requests of
- * any other type get a best-effort answer: only create-index responses are
- * supported, anything else throws [UnsupportedOperationException].
+ * Records every request passed to [performRequest] in [requests] and answers:
+ * - create-index requests with an acknowledged [co.elastic.clients.elasticsearch.indices.CreateIndexResponse].
+ * - bulk requests with [bulkHandler] when set, else with a success response
+ * (one `200` item per operation, mirroring its type, index and id).
+ * Requests of any other type get a best-effort answer: only the above responses
+ * are supported, anything else throws [UnsupportedOperationException].
  *
  * Build a client over it with `ElasticsearchClient(fakeTransport)`.
  *
  * @param failure When non-null, [performRequest] throws it instead of recording
  * and answering. Used to test error propagation.
+ * @param bulkHandler Answers bulk requests. Used to simulate per-item failures.
  */
 class FakeElasticsearchTransport(
-    var failure: IOException? = null
+    var failure: IOException? = null,
+    var bulkHandler: ((BulkRequest) -> BulkResponse)? = null
 ) : ElasticsearchTransport {
     val requests = mutableListOf<Any?>()
 
@@ -42,7 +48,13 @@ class FakeElasticsearchTransport(
                 it.index(request.index()).acknowledged(true).shardsAcknowledged(true)
             } as ResponseT
         }
-        throw UnsupportedOperationException("FakeElasticsearchTransport supports only CreateIndexRequest, got: $request")
+        if (request is BulkRequest) {
+            @Suppress("UNCHECKED_CAST")
+            return (bulkHandler?.invoke(request) ?: bulkSuccessResponse(request)) as ResponseT
+        }
+        throw UnsupportedOperationException(
+            "FakeElasticsearchTransport supports only CreateIndexRequest and BulkRequest, got: $request"
+        )
     }
 
     override fun <RequestT, ResponseT, ErrorT> performRequestAsync(
