@@ -43,13 +43,23 @@ internal class ElasticsearchSetDelegate : SetDelegate {
         // Use the entity path (with key values): unlike the field path, it
         // uniquely identifies the instance, which the document `_id` requires.
         when (setAux) {
-            SetAux.CREATE, SetAux.UPDATE -> {
+            SetAux.CREATE -> {
                 val source = mutableMapOf<String, Any?>()
                 source[ENTITY_PATH_FIELD_NAME] = entityPath
                 keys.forEach { addField(source, entityPath, it) }
                 associations.forEach { addField(source, entityPath, it) }
                 other.forEach { addField(source, entityPath, it) }
                 operations.add(DocumentOperation.Index(index, entityPath, source))
+            }
+            // Only the updated fields are sent, and they are merged into the
+            // existing document (never replacing it). Keys and the entity path
+            // are not part of the update: they address the document via its
+            // `_id`, which is immutable.
+            SetAux.UPDATE -> {
+                val partialSource = mutableMapOf<String, Any?>()
+                associations.forEach { addField(partialSource, entityPath, it) }
+                other.forEach { addField(partialSource, entityPath, it) }
+                operations.add(DocumentOperation.Update(index, entityPath, partialSource))
             }
             SetAux.DELETE -> operations.add(DocumentOperation.Delete(index, entityPath))
         }

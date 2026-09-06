@@ -28,6 +28,18 @@ sealed interface DocumentOperation {
         val source: Map<String, Any?>
     ) : DocumentOperation
 
+    /**
+     * Merges a partial document into the existing document for an entity
+     * instance (Elasticsearch Update API). Only the fields being updated are
+     * present in [partialSource]; all other stored fields are left untouched.
+     * Unlike [Index], this never replaces the existing document.
+     */
+    data class Update(
+        override val index: String,
+        override val entityPath: String,
+        val partialSource: Map<String, Any?>
+    ) : DocumentOperation
+
     /** Deletes the document for an entity instance. */
     data class Delete(
         override val index: String,
@@ -40,10 +52,13 @@ sealed interface DocumentOperation {
  * entity in traversal order. This is the Elasticsearch analog of MySQL DML
  * generation: pure request generation with no client interaction.
  *
- * - `CREATE` and `UPDATE` entities produce [DocumentOperation.Index] with a
- * source map containing [ENTITY_PATH_FIELD_NAME], key fields and all other single-valued
+ * - `CREATE` entities produce [DocumentOperation.Index] with a source map
+ * containing [ENTITY_PATH_FIELD_NAME], key fields and all other single-valued
  * fields of the entity. Composition fields are skipped: each entity instance
  * is stored as its own document in its entity's dedicated index.
+ * - `UPDATE` entities produce [DocumentOperation.Update] with a partial source
+ * map containing only the fields being updated, so the existing document is
+ * merged rather than replaced.
  * - `DELETE` entities produce [DocumentOperation.Delete].
  * - Fields with null values are omitted from the source map.
  *

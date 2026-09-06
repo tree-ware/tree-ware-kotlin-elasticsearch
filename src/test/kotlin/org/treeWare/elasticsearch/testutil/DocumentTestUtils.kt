@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import org.treeWare.elasticsearch.operator.DocumentOperation
 import org.treeWare.elasticsearch.operator.DocumentOperation.Delete
 import org.treeWare.elasticsearch.operator.DocumentOperation.Index
+import org.treeWare.elasticsearch.operator.DocumentOperation.Update
 
 internal object DocumentTestUtils {
     private val objectMapper = ObjectMapper()
@@ -23,6 +24,12 @@ internal object DocumentTestUtils {
             "index" to index,
             "entity_path_" to entityPath,
             "source" to source
+        )
+        is Update -> mapOf(
+            "op" to "update",
+            "index" to index,
+            "entity_path_" to entityPath,
+            "source" to partialSource
         )
         is Delete -> mapOf(
             "op" to "delete",
