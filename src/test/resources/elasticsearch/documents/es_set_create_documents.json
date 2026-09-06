@@ -54,8 +54,8 @@
     "id" : "cc477201-48ec-4367-83a4-7fdbd92f8a6f",
     "is_hero" : true,
     "last_name" : "Kent",
-    "main_secret" : "{\"unencrypted\":\"Alien from Krypton\"}",
-    "password" : "{\"unhashed\":\"kryptonite\"}",
+    "main_secret" : "",
+    "password" : "",
     "picture" : "UGljdHVyZSBvZiBDbGFyayBLZW50"
   }
 }, {

@@ -108,10 +108,7 @@ private fun toJsonLong(value: ULong): Number =
 
 private fun encodeElementToJson(element: ElementModel): String {
     val buffer = Buffer()
-    // ALL (rather than HASHED_AND_ENCRYPTED as in MySQL): this stack has no
-    // hasher/cipher configured, so unhashed/unencrypted values would otherwise
-    // be silently dropped from the document.
-    if (!encodeJson(element, buffer, encodePasswords = EncodePasswords.ALL)) {
+    if (!encodeJson(element, buffer, encodePasswords = EncodePasswords.HASHED_AND_ENCRYPTED)) {
         throw IllegalStateException("Unable to encode element to JSON")
     }
     return buffer.readUtf8()
