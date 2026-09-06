@@ -58,11 +58,13 @@ class CreateIndexRequestsVisitor : AbstractLeader1MetaModelVisitor<TraversalActi
                 FieldType.STRING -> p.text { t -> t.fields("keyword") { f -> f.keyword { it } } }
                 FieldType.UUID -> p.keyword { it }
                 FieldType.BLOB -> p.binary { it }
-                FieldType.PASSWORD1WAY -> p.keyword { it }
-                FieldType.PASSWORD2WAY -> p.keyword { it }
+                // Stored as nested JSON objects (hashed/encrypted form for
+                // passwords, target keys for associations).
+                FieldType.PASSWORD1WAY -> p.nested { it }
+                FieldType.PASSWORD2WAY -> p.nested { it }
                 FieldType.ALIAS -> p.keyword { it }
                 FieldType.ENUMERATION -> p.keyword { it }
-                FieldType.ASSOCIATION -> p.keyword { it }
+                FieldType.ASSOCIATION -> p.nested { it }
                 // Unreachable: compositions are skipped before mapping (see above).
                 FieldType.COMPOSITION -> error("Composition fields must be skipped, not mapped")
             }

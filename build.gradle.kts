@@ -29,10 +29,11 @@ dependencies {
     implementation(kotlin("stdlib"))
 
     implementation("co.elastic.clients:elasticsearch-java:$elasticsearchVersion")
+    // Used by main source to parse password/association JSON into nested document objects.
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.17.2")
 
     testImplementation(libs.treeWareKotlinCoreTestFixtures)
     testImplementation(kotlin("test"))
-    testImplementation("com.fasterxml.jackson.core:jackson-databind:2.17.2")
 }
 
 tasks.test {

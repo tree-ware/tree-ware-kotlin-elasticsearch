@@ -5,7 +5,6 @@ import org.treeWare.elasticsearch.testutil.JsonTestUtils
 import org.treeWare.metaModel.addressBookMetaModel
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class CreateIndexRequestsTests {
@@ -72,8 +71,6 @@ class CreateIndexRequestsTests {
         indexRequests.forEach { req ->
             val index = req.index()
             val actual = JsonTestUtils.normalizeJson(JsonTestUtils.serializeRequestBodyToJson(req))
-            //  Mappings must not contain composition mappings (each entity has its own dedicated index).
-            assertFalse(actual.contains(": \"nested\""), "Composition mapping leaked into index: $index")
             val resourcePath = "elasticsearch/mappings/$index.json"
             val expected = this::class.java.classLoader.getResource(resourcePath)?.readText()
             if (expected == null) missingGoldenFiles.add(resourcePath) else {

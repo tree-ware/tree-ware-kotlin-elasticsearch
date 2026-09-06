@@ -2,7 +2,7 @@
   "mappings" : {
     "properties" : {
       "person" : {
-        "type" : "keyword"
+        "type" : "nested"
       },
       "id" : {
         "type" : "keyword"

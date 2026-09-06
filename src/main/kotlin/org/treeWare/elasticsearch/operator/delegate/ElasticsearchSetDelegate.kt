@@ -1,5 +1,6 @@
 package org.treeWare.elasticsearch.operator.delegate
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import okio.Buffer
 import org.treeWare.elasticsearch.index.ENTITY_PATH_FIELD_NAME
 import org.treeWare.elasticsearch.index.getIndexName
@@ -88,14 +89,14 @@ private fun encodeFieldValue(entityPath: String, field: SingleFieldModel): Any? 
         FieldType.UUID -> (fieldValue as PrimitiveModel).value.toString()
         // The mapping uses `binary`, which expects base-64-encoded strings.
         FieldType.BLOB -> encodeBase64((fieldValue as PrimitiveModel).value as ByteArray)
-        // Store the hashed/encrypted JSON form, the same as the MySQL JSON columns.
+        // Store the hashed/encrypted form as a nested JSON object.
         FieldType.PASSWORD1WAY,
-        FieldType.PASSWORD2WAY -> encodeElementToJson(fieldValue)
+        FieldType.PASSWORD2WAY -> encodeElementToNestedJson(fieldValue)
         FieldType.ALIAS -> throw IllegalStateException("Alias fields are not supported in entity $entityPath")
         // Stored as a number (the mapping is `keyword`, which coerces numbers), the same as MySQL.
         FieldType.ENUMERATION -> (fieldValue as EnumerationModel).number.toLong()
-        // Store the JSON form of the association (target keys), the same as the MySQL JSON column.
-        FieldType.ASSOCIATION -> encodeElementToJson(fieldValue as AssociationModel)
+        // Store the association (target keys) as a nested JSON object.
+        FieldType.ASSOCIATION -> encodeElementToNestedJson(fieldValue as AssociationModel)
         // Compositions are stored as their own documents, never inline. A composition
         // reaches here only if a single-value entity delegate is registered for it;
         // entity delegates are not yet supported (see work-plan Step 5).
@@ -106,10 +107,21 @@ private fun encodeFieldValue(entityPath: String, field: SingleFieldModel): Any? 
 private fun toJsonLong(value: ULong): Number =
     if (value <= Long.MAX_VALUE.toULong()) value.toLong() else java.math.BigInteger(value.toString())
 
-private fun encodeElementToJson(element: ElementModel): String {
+private val jsonMapper = ObjectMapper()
+
+/**
+ * Encodes a password or association value as a nested JSON object (parsed into
+ * maps and lists) for the document `_source`. Returns null when there is
+ * nothing to store (a password without a hashed/encrypted form encodes to
+ * nothing); the caller omits nulls from the document.
+ */
+private fun encodeElementToNestedJson(element: ElementModel): Map<String, Any?>? {
     val buffer = Buffer()
     if (!encodeJson(element, buffer, encodePasswords = EncodePasswords.HASHED_AND_ENCRYPTED)) {
         throw IllegalStateException("Unable to encode element to JSON")
     }
-    return buffer.readUtf8()
+    val json = buffer.readUtf8()
+    if (json.isBlank()) return null
+    @Suppress("UNCHECKED_CAST")
+    return jsonMapper.readValue(json, Map::class.java) as Map<String, Any?>
 }

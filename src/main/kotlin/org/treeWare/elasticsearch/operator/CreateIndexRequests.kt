@@ -10,7 +10,8 @@ import org.treeWare.model.core.EntityModel
  * The index name for each entity is a concatenation of the package name and entity name with "__" as separator.
  * Each non-composition field in the entity is added as a property in the index mappings with a type derived
  * from the meta-model field type. Composition fields are skipped: every entity instance is stored as its own
- * document in its entity's dedicated index, so there is no need for nested composition mappings.
+ * document in its entity's dedicated index, so compositions need no mappings. Password and association fields
+ * are mapped to `nested` since their values are stored as nested JSON objects in documents.
  * Every mapping also contains a `entity_path_` keyword field identifying the entity instance's tree-ware path.
  *
  * String fields are mapped to `text` (with a `keyword` multi-field for exact matches) so that any text in any
