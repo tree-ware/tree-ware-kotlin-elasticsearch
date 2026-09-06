@@ -93,8 +93,8 @@ private fun encodeFieldValue(entityPath: String, field: SingleFieldModel): Any? 
         FieldType.PASSWORD1WAY,
         FieldType.PASSWORD2WAY -> encodeElementToNestedJson(fieldValue)
         FieldType.ALIAS -> throw IllegalStateException("Alias fields are not supported in entity $entityPath")
-        // Stored as a number (the mapping is `keyword`, which coerces numbers), the same as MySQL.
-        FieldType.ENUMERATION -> (fieldValue as EnumerationModel).number.toLong()
+        // Store the symbolic name (the mapping is `keyword`).
+        FieldType.ENUMERATION -> (fieldValue as EnumerationModel).value
         // Store the association (target keys) as a nested JSON object.
         FieldType.ASSOCIATION -> encodeElementToNestedJson(fieldValue as AssociationModel)
         // Compositions are stored as their own documents, never inline. A composition

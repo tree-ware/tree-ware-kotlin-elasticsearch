@@ -12,7 +12,7 @@
   "index" : "org.tree_ware.test.address_book.main__address_book_settings",
   "op" : "index",
   "source" : {
-    "background_color" : 3,
+    "background_color" : "blue",
     "encrypt_hero_name" : false,
     "entity_path_" : "/settings",
     "last_name_first" : true
@@ -22,7 +22,7 @@
   "index" : "org.tree_ware.test.address_book.main__advanced_settings",
   "op" : "index",
   "source" : {
-    "border_color" : 7,
+    "border_color" : "red",
     "entity_path_" : "/settings/advanced"
   }
 }, {
@@ -84,7 +84,7 @@
         "id" : "a8aacf55-7810-4b43-afe5-4344f25435fd"
       } ]
     },
-    "relationship" : 7
+    "relationship" : "colleague"
   }
 }, {
   "entity_path_" : "/persons/a8aacf55-7810-4b43-afe5-4344f25435fd",

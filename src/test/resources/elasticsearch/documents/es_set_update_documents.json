@@ -11,7 +11,7 @@
   "index" : "org.tree_ware.test.address_book.main__address_book_settings",
   "op" : "index",
   "source" : {
-    "background_color" : 4,
+    "background_color" : "green",
     "entity_path_" : "/settings",
     "last_name_first" : false
   }
